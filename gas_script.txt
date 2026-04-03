@@ -1,0 +1,82 @@
+function doPost(e) {
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+
+  try {
+    // アプリから送られてきたデータを受け取る
+    var data = JSON.parse(e.postData.contents);
+    
+    // 1. 「現在在庫」タブを更新・作成する
+    updateCurrentInventory(spreadsheet, data);
+    
+    // 2. 「各アイテムの履歴」タブを更新・作成する
+    updateItemHistory(spreadsheet, data);
+    
+    return ContentService.createTextOutput(JSON.stringify({"status": "success"})).setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    console.log("エラーが発生しました: " + error);
+    return ContentService.createTextOutput(JSON.stringify({"status": "error", "message": error.toString()})).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// -------------------------------------------------------------
+// ① 「現在在庫」シートの更新関数
+// -------------------------------------------------------------
+function updateCurrentInventory(spreadsheet, data) {
+  var sheetName = "現在在庫";
+  var sheet = spreadsheet.getSheetByName(sheetName);
+  
+  // シートが存在しなければ新しく作る
+  if (!sheet) {
+    sheet = spreadsheet.insertSheet(sheetName, 0); // 先頭に作成
+    sheet.appendRow(["カテゴリ", "商品名", "現在の在庫", "最終更新日時", "最後に操作した人"]);
+    sheet.getRange(1, 1, 1, 5).setBackground('#d9ead3').setFontWeight('bold');
+    sheet.setFrozenRows(1); // スクロールしてもメニュー行を固定
+    sheet.setColumnWidths(4, 1, 150);
+  }
+  
+  var values = sheet.getDataRange().getValues();
+  var found = false;
+  
+  // 既にその商品がリストにあるか探す
+  for (var i = 1; i < values.length; i++) {
+    if (values[i][1] === data.itemName) {
+      // 見つかった場合は在庫数と日時だけを「上書き更新」する
+      var rowIndex = i + 1;
+      sheet.getRange(rowIndex, 3).setValue(data.resultQuantity); // 現在の在庫
+      sheet.getRange(rowIndex, 4).setValue(data.date);           // 最終更新日時
+      sheet.getRange(rowIndex, 5).setValue(data.user);           // 最後に操作した人
+      found = true;
+      break;
+    }
+  }
+  
+  // 初めて操作・追加される商品の場合は、一番下の行に新規追加する
+  if (!found) {
+    sheet.appendRow([data.category, data.itemName, data.resultQuantity, data.date, data.user]);
+  }
+}
+
+// -------------------------------------------------------------
+// ② 「各アイテムの個別履歴」シートの更新関数
+// -------------------------------------------------------------
+function updateItemHistory(spreadsheet, data) {
+  var sheetName = data.itemName; // 商品名をそのままタブの名前にする（例：「洗濯洗剤」）
+  var sheet = spreadsheet.getSheetByName(sheetName);
+  
+  // その商品のタブがまだ無ければ新しく作る
+  if (!sheet) {
+    sheet = spreadsheet.insertSheet(sheetName);
+    sheet.appendRow(["日時", "操作した人", "操作内容", "増減数", "操作後の在庫"]);
+    sheet.getRange(1, 1, 1, 5).setBackground('#fff2cc').setFontWeight('bold');
+    sheet.setColumnWidths(1, 1, 150);
+  }
+  
+  // 選ばれた商品のタブにログを1行書き込む
+  sheet.appendRow([
+    data.date, 
+    data.user, 
+    data.action, 
+    data.amount, 
+    data.resultQuantity
+  ]);
+}

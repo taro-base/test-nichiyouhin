@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日用品 在庫管理</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1>📦 在庫管理</h1>
+            <p class="subtitle">夫・妻の共有データベース</p>
+            
+            <div class="user-selector">
+                <span class="user-label">操作している人:</span>
+                <select id="user-select">
+                    <option value="夫">👤 夫</option>
+                    <option value="妻">👤 妻</option>
+                </select>
+            </div>
+        </header>
+
+        <div class="controls">
+            <button id="add-item-btn" class="primary-btn">+ 新しいアイテムを追加</button>
+        </div>
+
+        <div class="inventory-list" id="inventory-list">
+            <!-- Items will be generated here by app.js -->
+        </div>
+    </div>
+
+    <!-- Firebase SDK (互換モード) -->
+    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
+    
+    <script src="app.js"></script>
+</body>
+</html>
