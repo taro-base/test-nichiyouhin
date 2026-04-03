@@ -1,179 +1,201 @@
 :root {
-    --bg-color: #f4f7f6;
+    --bg-color: #f0f2f5;
     --card-bg: #ffffff;
-    --text-main: #2d3748;
-    --text-muted: #718096;
-    --primary: #4299e1;
-    --primary-hover: #3182ce;
-    --danger: #fc8181;
-    --warning: #fbd38d;
+    --text-main: #1a202c;
+    --text-muted: #4a5568;
+    --primary: #3182ce;
+    --primary-hover: #2b6cb0;
+    --danger: #e53e3e;
+    --warning: #ed8936;
     --warning-bg: #fffaf0;
-    --border-radius: 16px;
-    --shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+    --border-radius: 20px;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: 'Inter', -apple-system, sans-serif;
     background-color: var(--bg-color);
     color: var(--text-main);
     line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
+    padding-bottom: 100px; /* 下のボタンとかぶらないための余白 */
 }
 
-.app-container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 24px 16px;
-}
-
+/* ヘッダーを固定 */
 .app-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: rgba(240, 242, 245, 0.9);
+    backdrop-filter: blur(10px);
+    padding: 16px;
     text-align: center;
-    margin-bottom: 32px;
 }
 
 .app-header h1 {
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--text-main);
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 4px;
 }
 
 .subtitle {
-    font-size: 14px;
+    font-size: 12px;
     color: var(--text-muted);
-    margin-top: 4px;
 }
 
 .user-selector {
-    margin-top: 16px;
+    margin-top: 12px;
     display: inline-flex;
     align-items: center;
     background: var(--card-bg);
-    padding: 8px 16px;
-    border-radius: 20px;
+    padding: 6px 16px;
+    border-radius: 30px;
     box-shadow: var(--shadow);
 }
 
 .user-label {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 600;
-    margin-right: 8px;
+    margin-right: 6px;
 }
 
 #user-select {
     border: none;
-    font-size: 16px;
-    font-weight: 700;
+    font-size: 15px;
+    font-weight: 800;
     background: transparent;
     cursor: pointer;
     outline: none;
     color: var(--primary);
 }
 
+/* 「＋ 追加」ボタンを右下のフローティングボタン (FAB) に変更 */
 .controls {
-    margin-bottom: 24px;
-    display: flex;
-    justify-content: center;
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 1000;
 }
 
 .primary-btn {
     background-color: var(--primary);
     color: white;
     border: none;
-    padding: 12px 24px;
-    border-radius: 30px;
-    font-size: 16px;
-    font-weight: 600;
+    height: 60px;
+    width: 60px;
+    border-radius: 50%;
+    font-size: 30px;
     cursor: pointer;
-    box-shadow: 0 4px 10px rgba(66, 153, 225, 0.3);
-    transition: transform 0.2s, background-color 0.2s;
+    box-shadow: 0 8px 20px rgba(49, 130, 206, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* モバイルでは文字じゃなくて「＋」だけに（後で調整したい場合はこのままでもOK） */
+.primary-btn::before {
+    content: '';
 }
 
 .primary-btn:hover {
-    background-color: var(--primary-hover);
-    transform: translateY(-2px);
+    transform: scale(1.1) rotate(90deg);
 }
 
-.primary-btn:active {
-    transform: translateY(0);
+/* リスト部分 */
+.app-container {
+    padding: 0 16px;
 }
 
 .inventory-list {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
 }
 
 .item-card {
     background-color: var(--card-bg);
     border-radius: var(--border-radius);
-    padding: 20px;
+    padding: 16px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
     box-shadow: var(--shadow);
-    transition: transform 0.2s, background-color 0.3s;
+    border: 1px solid rgba(0,0,0,0.02);
 }
 
 .item-card.low-stock {
     background-color: var(--warning-bg);
-    border-left: 6px solid var(--warning);
+    border: 2px solid var(--warning);
 }
 
 .item-thumbnail {
-    width: 60px;
-    height: 60px;
-    border-radius: 12px;
+    width: 70px;
+    height: 70px;
+    border-radius: 14px;
     object-fit: cover;
-    margin-right: 16px;
-    background-color: #e2e8f0;
+    margin-right: 14px;
+    background-color: #edf2f7;
+    flex-shrink: 0;
 }
 
 .placeholder-img {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 32px;
+    font-size: 36px;
 }
 
 .item-info {
     flex: 1;
+    overflow: hidden;
 }
 
 .item-category {
-    font-size: 12px;
-    font-weight: 600;
+    font-size: 11px;
+    font-weight: 700;
     color: var(--primary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
 }
 
 .low-stock .item-category {
-    color: #dd6b20;
+    color: var(--warning);
 }
 
 .item-name {
-    font-size: 18px;
-    font-weight: 700;
+    font-size: 17px;
+    font-weight: 800;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .item-actions {
     display: flex;
+    flex-direction: column; /* スマホでは縦並びにして幅を節約 */
     align-items: center;
-    gap: 16px;
+    gap: 8px;
+    margin-left: 8px;
+}
+
+@media (min-width: 400px) {
+    .item-actions {
+        flex-direction: row;
+        gap: 14px;
+    }
 }
 
 .quantity-display {
-    font-size: 24px;
-    font-weight: 700;
+    font-size: 26px;
+    font-weight: 900;
     min-width: 40px;
     text-align: center;
+    color: var(--text-main);
 }
 
 .low-stock .quantity-display {
@@ -181,45 +203,29 @@ body {
 }
 
 .action-btn {
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     border: none;
-    font-size: 24px;
-    font-weight: bold;
+    font-size: 22px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    background-color: var(--bg-color);
-    color: var(--text-main);
-}
-
-.action-btn:hover {
-    background-color: #e2e8f0;
-    transform: scale(1.1);
+    background-color: #f7fafc;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
 .action-btn:active {
-    transform: scale(0.95);
+    transform: scale(0.9);
 }
 
-.btn-decrease {
-    color: var(--danger);
-}
+.btn-decrease { color: var(--danger); }
+.btn-increase { color: var(--primary); }
 
-.btn-increase {
-    color: var(--primary);
-}
-
-/* Add a subtle pop animation when quantity changes */
 @keyframes pop {
     0% { transform: scale(1); }
-    50% { transform: scale(1.2); }
+    50% { transform: scale(1.3); }
     100% { transform: scale(1); }
 }
-
-.pop-animation {
-    animation: pop 0.3s ease-in-out;
-}
+.pop-animation { animation: pop 0.3s ease-out; }
